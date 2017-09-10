@@ -21,12 +21,14 @@ namespace SimpleHttpListener
         public string ContentType { get; set; }
 
         public string Body { get; set; }
+        public string Location { get; set; }
 
         private void Write()
         {
             response.SendChunked = false;
             response.KeepAlive = false;
             response.StatusCode = (int)Status;
+            response.RedirectLocation = Location;
             if (!string.IsNullOrEmpty(Body))
             {
                 response.ContentEncoding = Encoding.UTF8;

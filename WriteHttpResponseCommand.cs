@@ -3,7 +3,7 @@ using System.Net;
 
 namespace SimpleHttpListener
 {
-    [Cmdlet(VerbsCommunications.Write,"Response")]
+    [Cmdlet(VerbsCommunications.Write,"Response",DefaultParameterSetName="Status")]
     [OutputType(typeof(Request))]
     public class WriteHttpResponseCommand : PSCmdlet
     {
@@ -17,19 +17,23 @@ namespace SimpleHttpListener
         [ValidateNotNull()]
         public Request Request { get; set; }
 
-        [Parameter()]
+        [Parameter(ParameterSetName="Status")]
         [PSDefaultValue(Value = HttpStatusCode.OK)]
         public HttpStatusCode Status { get; set; } 
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "Status")]
         [PSDefaultValue(Value = "text/html")]
         [AllowNull()]
         public string ContentType { get; set; } 
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "Status")]
         [AllowEmptyString()]
         [AllowNull()]
         public string Body { get; set; }
+
+        [Parameter(ParameterSetName = "Location",Mandatory = true)]
+        [ValidateNotNull()]
+        public string Location { get; set; }
 
         [Parameter()]
         public SwitchParameter Stop { get; set; }
@@ -39,9 +43,20 @@ namespace SimpleHttpListener
 
         protected override void ProcessRecord()
         {
-            Request.Response.Status = Status;
-            Request.Response.ContentType = ContentType;
-            Request.Response.Body = Body;
+            switch(ParameterSetName)
+            {
+                case "Status":
+                    Request.Response.Status = Status;
+                    Request.Response.ContentType = ContentType;
+                    Request.Response.Body = Body;
+                    break;
+                case "Location":
+                    Request.Response.Status = HttpStatusCode.Found;
+                    Request.Response.Location = Location;
+                    Request.Response.ContentType = null;
+                    Request.Response.Body = null;
+                    break;
+            }
             Request.Response.Close();
             Request.Close();
             if (PassThru)

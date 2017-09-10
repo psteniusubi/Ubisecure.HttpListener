@@ -8,10 +8,13 @@ param()
 Import-Module -Name (Split-Path -Path $PSCommandPath -Parent | Join-Path -ChildPath "bin/Debug/net47/HttpListener.dll") -Prefix "Http" -Force
 
 $listener = Start-HttpListener -Prefix "http://localhost:8080/hello/"
-$req = $listener | Read-HttpRequest | 
-#    % { Write-Host $_.Url.LocalPath; $_ }
-    ? { $_.Url.LocalPath -eq "/hello/world" } |
-    Write-HttpResponse -Body "<p>hello</p>" -Stop -PassThru
+$req = $listener | Read-HttpRequest | % {
+    $local:r = $_
+	switch($r.Url.LocalPath) {
+		"/hello/" { $r | Write-HttpResponse -Location "/hello/world" }
+		"/hello/world" { $r | Write-HttpResponse -Body "<p>hello</p>" -Stop -PassThru }
+	}
+}
 $listener | Stop-HttpListener
 $req 
 
