@@ -56,7 +56,16 @@ namespace SimpleHttpListener
 
         public override string ToString()
         {
-            return "HTTP/1.1 " + (int)Status + " " + Status.ToString() + " Content-Type: " + ContentType;
+            string s = "HTTP/1.1 " + (int)Status + " " + Status.ToString();
+            if(!string.IsNullOrWhiteSpace(ContentType))
+            {
+                s += " Content-Type: " + ContentType;
+            }
+            if (!string.IsNullOrWhiteSpace(Location))
+            {
+                s += " Location: " + Location;
+            }
+            return s;
         }
 
         #region IDisposable Support
