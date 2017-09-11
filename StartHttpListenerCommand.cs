@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using System;
+using System.Management.Automation;
 
 namespace SimpleHttpListener
 {
@@ -10,11 +11,21 @@ namespace SimpleHttpListener
 
         [Parameter(Mandatory = true)]
         [ValidateNotNull()]
-        public string Prefix { get; set; }
+        public Uri Prefix { get; set; }
+
+        [Parameter()]
+        public SwitchParameter RandomPort { get; set; }
 
         protected override void BeginProcessing()
         {
-            listener = new Listener(Prefix);
+            Uri prefix = Prefix;
+            if(RandomPort)
+            {
+                UriBuilder b = new UriBuilder(prefix);
+                b.Port = Listener.FindFreePort(16384, true);
+                prefix  = b.Uri;
+            }
+            listener = new Listener(prefix);
         }
         protected override void ProcessRecord()
         {

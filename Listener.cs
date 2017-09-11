@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,17 +10,65 @@ namespace SimpleHttpListener
 {
     public class Listener : IDisposable
     {
+        public static int FindFreePort(int min, bool random)
+        {
+            BitArray free = new BitArray(UInt16.MaxValue);
+            for (var i = min; i < UInt16.MaxValue; i++)
+            {
+                free.Set(i, true);
+            }
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            foreach (var i in properties.GetActiveTcpConnections())
+            {
+                free.Set(i.LocalEndPoint.Port, false);
+            }
+            foreach (var i in properties.GetActiveTcpListeners())
+            {
+                free.Set(i.Port, false);
+            }
+            foreach (var i in properties.GetActiveUdpListeners())
+            {
+                free.Set(i.Port, false);
+            }
+            if (random)
+            {
+                RandomNumberGenerator prng = RandomNumberGenerator.Create();
+                for (var i = 0; i < UInt16.MaxValue; i++)
+                {
+                    byte[] b = new byte[2];
+                    prng.GetNonZeroBytes(b);
+                    int port = BitConverter.ToUInt16(b, 0);
+                    if (port >= min && port < UInt16.MaxValue && free[port])
+                    {
+                        return port;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = min; i < UInt16.MaxValue; i++)
+                {
+                    if (free[i])
+                    {
+                        return i;
+                    }
+                }
+            }
+            throw new ArgumentException();
+        }
+
         private readonly AtomicBool started = new AtomicBool();
         private readonly AtomicBool closed = new AtomicBool();
-        private readonly string prefix;
         private HttpListener _listener;
 
-        public Listener(string prefix)
+        public Listener(Uri prefix)
         {
-            this.prefix = prefix;
+            Prefix = prefix;
             _listener = new HttpListener();
-            _listener.Prefixes.Add(prefix);
+            _listener.Prefixes.Add(Prefix.ToString());
         }
+
+        public Uri Prefix { get; private set; }
 
         internal Request ReadRequest(CancellationToken cancellationToken)
         {
@@ -65,7 +116,7 @@ namespace SimpleHttpListener
 
         public override string ToString()
         {
-            return "Listener(" + prefix + ")";
+            return Prefix.ToString();
         }
 
         #region IDisposable Support
