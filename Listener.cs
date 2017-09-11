@@ -65,7 +65,12 @@ namespace SimpleHttpListener
         {
             Prefix = prefix;
             _listener = new HttpListener();
-            _listener.Prefixes.Add(Prefix.ToString());
+            string s = Prefix.ToString();
+            if(!s.EndsWith("/"))
+            {
+                s += "/";
+            }
+            _listener.Prefixes.Add(s);
         }
 
         public Uri Prefix { get; private set; }
