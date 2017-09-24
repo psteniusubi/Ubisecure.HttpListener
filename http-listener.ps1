@@ -7,6 +7,6 @@ $listener = Start-HttpListener -Prefix "http://localhost/application/redirect/" 
 
 $html = "<p>Operation completed</p>"
 
-Start-Process -FilePath $listener.Prefix | Out-Null
+Start-Process -FilePath "curl" -ArgumentList "$($listener.Prefix)?name=value" -NoNewWindow 
 
 $listener | Read-HttpRequest | Write-HttpResponse -Body $html -Stop -PassThru
