@@ -1,8 +1,8 @@
-﻿using System;
-using System.Management.Automation;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System;
+    using System.Management.Automation;
+
     [Cmdlet(VerbsLifecycle.Start,"Listener")]
     [OutputType(typeof(Listener))]
     public class StartHttpListenerCommand : PSCmdlet

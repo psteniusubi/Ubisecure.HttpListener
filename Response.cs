@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net;
-using System.Text;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System;
+    using System.Net;
+    using System.Text;
+
     public class Response : IDisposable
     {
         private readonly AtomicBool closed = new AtomicBool();

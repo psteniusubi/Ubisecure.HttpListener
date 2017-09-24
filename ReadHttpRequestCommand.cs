@@ -1,8 +1,8 @@
-﻿using System.Management.Automation;
-using System.Threading;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System.Management.Automation;
+    using System.Threading;
+
     [Cmdlet(VerbsCommunications.Read,"Request")]
     [OutputType(typeof(Request))]
     public class ReadHttpRequestCommand : PSCmdlet

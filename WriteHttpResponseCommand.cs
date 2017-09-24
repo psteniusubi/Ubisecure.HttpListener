@@ -1,8 +1,8 @@
-﻿using System.Management.Automation;
-using System.Net;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System.Management.Automation;
+    using System.Net;
+
     [Cmdlet(VerbsCommunications.Write,"Response",DefaultParameterSetName="Status")]
     [OutputType(typeof(Request))]
     public class WriteHttpResponseCommand : PSCmdlet

@@ -1,7 +1,7 @@
-﻿using System.Management.Automation;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System.Management.Automation;
+
     [Cmdlet(VerbsLifecycle.Stop,"Listener")]
     public class StopHttpListenerCommand : PSCmdlet
     {

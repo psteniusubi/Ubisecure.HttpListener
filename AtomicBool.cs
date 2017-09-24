@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System;
+    using System.Threading;
+
     internal sealed class AtomicBool
     {
         private const Int32 TRUE = 1;

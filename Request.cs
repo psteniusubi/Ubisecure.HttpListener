@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Net;
-using System.Text;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.Net;
+    using System.Text;
+
     public class Request : IDisposable
     {
         private readonly AtomicBool closed = new AtomicBool();

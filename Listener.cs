@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SimpleHttpListener
+﻿namespace SimpleHttpListener
 {
+    using System;
+    using System.Collections;
+    using System.Net;
+    using System.Net.NetworkInformation;
+    using System.Security.Cryptography;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class Listener : IDisposable
     {
         public static int FindFreePort(int min, bool random)
