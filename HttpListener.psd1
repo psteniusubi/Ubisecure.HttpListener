@@ -3,7 +3,7 @@
 #
 
 @{
-RootModule = 'HttpListener.psm1'
+RootModule = $null
 ModuleVersion = '1.0'
 GUID = '99ac7788-d9e4-428c-971f-e2fb555e7925'
 DefaultCommandPrefix = 'Http'
@@ -16,5 +16,7 @@ CmdletsToExport = @(
 )
 VariablesToExport = @()
 AliasesToExport = @()
-ScriptsToProcess = @()
+ScriptsToProcess = @(
+    "compile.ps1"
+)
 }
