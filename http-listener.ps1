@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param()
 
-Import-Module (Join-Path -Path $PSScriptRoot -ChildPath "HttpListener.psm1") 
+Import-Module (Join-Path -Path $PSScriptRoot -ChildPath "HttpListener.psd1") 
 
 $listener = Start-HttpListener -Prefix "http://localhost/application/redirect/" -RandomPort
 
