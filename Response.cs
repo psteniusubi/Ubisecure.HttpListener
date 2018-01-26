@@ -28,11 +28,14 @@
             response.SendChunked = false;
             response.KeepAlive = false;
             response.StatusCode = (int)Status;
-            response.RedirectLocation = Location;
+            if (!string.IsNullOrEmpty(Location))
+            {
+                response.RedirectLocation = Location;
+            }
             if (!string.IsNullOrEmpty(Body))
             {
                 response.ContentEncoding = Encoding.UTF8;
-                response.ContentType = response.ContentType;
+                response.ContentType = ContentType;
                 byte[] b = Encoding.UTF8.GetBytes(Body);
                 response.ContentLength64 = b.Length;
                 response.Close(b, true);

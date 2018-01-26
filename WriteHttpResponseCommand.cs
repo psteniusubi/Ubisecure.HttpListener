@@ -57,6 +57,7 @@
                     Request.Response.Body = null;
                     break;
             }
+            WriteVerbose("Write-Response >> " + Request.Response);
             Request.Response.Close();
             Request.Close();
             if (PassThru)

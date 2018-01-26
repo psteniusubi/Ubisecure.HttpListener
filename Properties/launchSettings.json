@@ -2,7 +2,8 @@
   "profiles": {
     "HttpListener": {
       "commandName": "Executable",
-      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe"
+      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe",
+      "commandLineArgs": "\"D:\\Users\\jeps\\OneDrive\\Work\\BankID\\http-listener.ps1\""
     }
   }
 }

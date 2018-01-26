@@ -31,7 +31,7 @@
                     }
                     WriteVerbose("Read-Request << " + request);
                     WriteObject(request);
-                    WriteVerbose("Read-Request >> " + request.Response);
+                    //WriteVerbose("Read-Request >> " + request.Response);
                 }
             }
         }
