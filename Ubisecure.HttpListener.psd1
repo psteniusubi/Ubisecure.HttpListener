@@ -1,11 +1,13 @@
 #
-# Module manifest for module 'HttpListener'
+# Module manifest for module 'Ubisecure.HttpListener'
 #
 
 @{
-RootModule = "HttpListener.psm1"
-ModuleVersion = '1.0'
-GUID = '99ac7788-d9e4-428c-971f-e2fb555e7925'
+RootModule = "Ubisecure.HttpListener.psm1"
+ModuleVersion = '1.0.0'
+GUID = 'f94e8814-3091-4ee4-bb63-660ae73471ba'
+Author = 'petteri.stenius@ubisecure.com'
+Description = 'Simple Http Listener'
 DefaultCommandPrefix = $null
 FunctionsToExport = @()
 CmdletsToExport = @(

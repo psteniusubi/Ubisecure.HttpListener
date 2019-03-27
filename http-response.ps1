@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param()
 
-Import-Module (Join-Path -Path $PSScriptRoot -ChildPath "HttpListener.psd1") -Force
+Import-Module (Join-Path -Path $PSScriptRoot -ChildPath "Ubisecure.HttpListener.psd1") -Force
 
 $listener = Start-HttpListener -Prefix "http://localhost:4321/"
 
