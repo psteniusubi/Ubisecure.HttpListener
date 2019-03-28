@@ -2,7 +2,7 @@
 
 PowerShell bindings for System.Net.HttpListener
 
-Used by [Ubisecure.OAuth2](../Ubisecure.OAuth2)
+Used by [Ubisecure.OAuth2](../../../Ubisecure.OAuth2)
 
 These commands are intendend to support *Loopback Interface Redirection* as defined in *OAuth 2.0 for Native Apps*
 
