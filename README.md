@@ -1,4 +1,4 @@
-# HttpListener
+# PowerShell Http Listener
 
 PowerShell bindings for System.Net.HttpListener
 
@@ -8,18 +8,30 @@ These commands are intendend to support *Loopback Interface Redirection* as defi
 
 https://tools.ietf.org/html/draft-ietf-oauth-native-apps-12#section-7.3
 
+## Install from github.com
+
+Windows
+
+```cmd
+cd /d %USERPROFILE%\Documents\WindowsPowerShell\Modules
+git clone --recurse-submodules https://github.com/psteniusubi/Ubisecure.HttpListener.git
+```
+
+Linux
+
+```bash
+cd ~/.local/share/powershell/Modules
+git clone --recurse-submodules https://github.com/psteniusubi/Ubisecure.HttpListener.git
+```
+
 ## Example use
 
 ```powershell
-
 $listener = Start-HttpListener -Prefix "http://localhost/application/redirect/" -RandomPort
 
-$authorizationrequest = "$($authorizationrequest)&redirect_uri=$($listener.Prefix)"
+Start-Process $listener.Prefix | Out-Null
 
-$html = "<p>Operation completed</p>"
+$request = $listener | Read-HttpRequest | Write-HttpResponse -Body "<p>Hello World</p>" -Stop -PassThru
 
-$request = $listener | Read-HttpRequest | Write-HttpResponse -Body $html -Stop -PassThru
-
-$authorizationcode = $request.Query["code"]
-
+Write-Host "$($request.HttpMethod) $($request.Url)"
 ```
