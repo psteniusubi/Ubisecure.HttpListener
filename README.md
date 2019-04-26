@@ -14,14 +14,14 @@ Windows
 
 ```cmd
 cd /d %USERPROFILE%\Documents\WindowsPowerShell\Modules
-git clone --recurse-submodules https://github.com/psteniusubi/Ubisecure.HttpListener.git
+git clone https://github.com/psteniusubi/Ubisecure.HttpListener.git
 ```
 
 Linux
 
 ```bash
 cd ~/.local/share/powershell/Modules
-git clone --recurse-submodules https://github.com/psteniusubi/Ubisecure.HttpListener.git
+git clone https://github.com/psteniusubi/Ubisecure.HttpListener.git
 ```
 
 ## Example use
