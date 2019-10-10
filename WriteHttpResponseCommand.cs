@@ -75,6 +75,7 @@
             {
                 Request.Close();
             }
+            base.StopProcessing();
         }
     }
 }

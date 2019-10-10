@@ -1,6 +1,7 @@
 ﻿namespace SimpleHttpListener
 {
     using System;
+    using System.Management.Automation;
     using System.Net;
     using System.Text;
 
@@ -8,51 +9,60 @@
     {
         private readonly AtomicBool closed = new AtomicBool();
         private readonly Request request;
-        private readonly HttpListenerResponse response;
         public Response(Request request, HttpListenerResponse response)
         {
             this.request = request;
-            this.response = response;
-            this.Status = HttpStatusCode.NotFound;
+            HttpResponse = response;
+            Status = HttpStatusCode.NotFound;
         }
 
-        public HttpStatusCode Status { get; set; }
+        [Hidden]
+        public HttpListenerResponse HttpResponse { get; private set; }
 
-        public string ContentType { get; set; }
+        public HttpStatusCode Status
+        {
+            get { return (HttpStatusCode)HttpResponse.StatusCode; }
+            set { HttpResponse.StatusCode = (int)value; }
+        }
+
+        public string ContentType
+        {
+            get { return HttpResponse.ContentType; }
+            set { HttpResponse.ContentType = value; }
+        }
+
+        public string Location
+        {
+            get { return HttpResponse.RedirectLocation; }
+            set { HttpResponse.RedirectLocation = value; }
+        }
 
         public string Body { get; set; }
-        public string Location { get; set; }
 
         private void Write()
         {
-            response.SendChunked = false;
-            response.KeepAlive = false;
-            response.StatusCode = (int)Status;
-            if (!string.IsNullOrEmpty(Location))
-            {
-                response.RedirectLocation = Location;
-            }
+            HttpResponse.SendChunked = false;
+            HttpResponse.KeepAlive = false;
             if (!string.IsNullOrEmpty(Body))
             {
-                response.ContentEncoding = Encoding.UTF8;
-                response.ContentType = ContentType;
+                HttpResponse.ContentEncoding = Encoding.UTF8;
                 byte[] b = Encoding.UTF8.GetBytes(Body);
-                response.ContentLength64 = b.Length;
-                response.Close(b, true);
+                HttpResponse.ContentLength64 = b.Length;
+                HttpResponse.Close(b, true);
             }
             else
             {
-                response.ContentLength64 = 0;
-                response.Close();
+                HttpResponse.ContentLength64 = 0;
+                HttpResponse.Close();
             }
         }
 
         internal void Close()
         {
-            if(!closed.GetAndSet(true))
+            if (!closed.GetAndSet(true))
             {
                 Write();
-                response.Close();
+                HttpResponse.Close();
             }
             request.Close();
         }
@@ -60,7 +70,7 @@
         public override string ToString()
         {
             string s = "HTTP/1.1 " + (int)Status + " " + Status.ToString();
-            if(!string.IsNullOrWhiteSpace(ContentType))
+            if (!string.IsNullOrWhiteSpace(ContentType))
             {
                 s += " Content-Type: " + ContentType;
             }
@@ -72,7 +82,7 @@
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; 
+        private bool disposedValue = false;
 
         protected virtual void Dispose(bool disposing)
         {

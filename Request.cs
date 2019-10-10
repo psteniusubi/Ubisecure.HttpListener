@@ -2,46 +2,49 @@
 {
     using System;
     using System.Collections.Specialized;
+    using System.IO;
+    using System.Management.Automation;
     using System.Net;
     using System.Text;
 
     public class Request : IDisposable
     {
         private readonly AtomicBool closed = new AtomicBool();
-        private readonly Listener listener;
         private readonly HttpListenerContext cx;
 
         public Request(Listener listener, HttpListenerContext cx)
         {
-            this.listener = listener;
             this.cx = cx;
-            this.IsLocal = cx.Request.IsLocal;
-            this.HttpMethod = cx.Request.HttpMethod;
-            this.Url = cx.Request.Url;
-            this.QueryString = cx.Request.QueryString;
-            if(cx.Request.HasEntityBody)
+            Listener = listener;
+            Response = new Response(this, cx.Response);
+            if (HasEntityBody)
             {
-                this.ContentType = cx.Request.ContentType;
-                byte[] b = new byte[cx.Request.ContentLength64];
-                cx.Request.InputStream.Read(b, 0, b.Length);
                 Encoding encoding = cx.Request.ContentEncoding;
                 if (encoding == null) encoding = Encoding.UTF8;
-                this.Body = encoding.GetString(b);
+                using (var reader = new StreamReader(cx.Request.InputStream, encoding))
+                {
+                    Body = reader.ReadToEnd();
+                }
             }
-            this.Response = new Response(this, cx.Response);
         }
-        internal Listener Listener {  get { return listener; } }
+        [Hidden]
+        internal Listener Listener { get; private set; }
+        [Hidden]
         internal Response Response { get; private set; }
-        public bool IsLocal { get; private set; }
-        public string HttpMethod { get; private set; }
-        public Uri Url { get; private set; }
-        public string ContentType { get; private set; }
-        public NameValueCollection QueryString { get; private set; }
+        [Hidden]
+        public HttpListenerRequest HttpRequest { get { return cx.Request; } }
+        public bool IsLocal { get { return HttpRequest.IsLocal; } }
+        public string HttpMethod { get { return HttpRequest.HttpMethod; } }
+        public Uri Url { get { return HttpRequest.Url; } }
+        public NameValueCollection QueryString { get { return HttpRequest.QueryString; } }
+        public string ContentType { get { return HttpRequest.ContentType; } }
+        public NameValueCollection Headers { get { return HttpRequest.Headers; } }
+        public bool HasEntityBody { get { return HttpRequest.HasEntityBody; } }
         public string Body { get; private set; }
 
         internal void Close()
         {
-            if(!closed.GetAndSet(true)) 
+            if (!closed.GetAndSet(true))
             {
                 Response.Close();
             }
@@ -49,11 +52,16 @@
 
         public override string ToString()
         {
-            return HttpMethod + " " + Url;
+            string s = HttpMethod + " " + Url;
+            if(!string.IsNullOrWhiteSpace(ContentType))
+            {
+                s += " Content-Type: " + ContentType;
+            }
+            return s;
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; 
+        private bool disposedValue = false;
 
         protected virtual void Dispose(bool disposing)
         {

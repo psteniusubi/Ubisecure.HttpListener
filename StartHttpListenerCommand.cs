@@ -41,6 +41,7 @@
             {
                 listener.Close();
             }
+            base.StopProcessing();
         }
     }
 }
