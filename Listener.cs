@@ -61,7 +61,7 @@
         private readonly AtomicBool closed = new AtomicBool();
         private HttpListener _listener;
 
-        public Listener(Uri prefix)
+        public Listener(Uri prefix, bool anyHost)
         {
             Prefix = prefix;
             _listener = new HttpListener();
@@ -70,7 +70,13 @@
             {
                 s += "/";
             }
-            _listener.Prefixes.Add(s);
+            if(anyHost) {
+                UriBuilder u = new UriBuilder(s);
+                u.Host = "*";
+                _listener.Prefixes.Add(u.ToString());
+            } else {
+                _listener.Prefixes.Add(s);
+            }
         }
 
         public Uri Prefix { get; private set; }

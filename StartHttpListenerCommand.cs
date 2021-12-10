@@ -14,7 +14,14 @@
         public Uri Prefix { get; set; }
 
         [Parameter()]
+        public SwitchParameter AnyHost { get; set; }
+
+        [Parameter()]
         public SwitchParameter RandomPort { get; set; }
+
+        public StartHttpListenerCommand() 
+        {
+        }
 
         protected override void BeginProcessing()
         {
@@ -25,7 +32,7 @@
                 b.Port = Listener.FindFreePort(16384, true);
                 prefix  = b.Uri;
             }
-            listener = new Listener(prefix);
+            listener = new Listener(prefix, AnyHost);
         }
         protected override void ProcessRecord()
         {
